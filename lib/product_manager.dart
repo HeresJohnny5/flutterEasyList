@@ -24,6 +24,7 @@ class _ProductManagerState extends State<ProductManager> {
       _products.add(widget.startingProduct);
     }
 
+  // PRIVATE METHOD
   void _addProducts(String product) {
     setState(() {
       _products.add(product);
@@ -38,7 +39,9 @@ class _ProductManagerState extends State<ProductManager> {
               margin: EdgeInsets.all(10.0),
               child: ProductControl(_addProducts),
           ),
-          Products(_products),
+          Expanded(
+            child: Products(_products),
+          ),
         ],
       );
     }
