@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+// LOCAL IMPORTS
+import './pages/product.dart';
+
 class Products extends StatelessWidget {
   final List<String> products;
 
@@ -12,16 +15,44 @@ class Products extends StatelessWidget {
               children: <Widget>[
                 Image.asset('assets/food.jpg'),
                 Text(products[index]),
+                ButtonBar(
+                  alignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    FlatButton(
+                      child: Text('Details'),
+                      onPressed: () {
+                        return Navigator.push(
+                          context, 
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => ProductPage()
+                          ),
+                        );
+                      }
+                    ),
+                  ],
+                ),
               ],
             ),
           );
   }
 
-  @override
-    Widget build(BuildContext context) {
-      return ListView.builder(
+  Widget _buildProductList() {
+    Widget productCards;
+
+    if (products.isNotEmpty) {
+      productCards = ListView.builder(
         itemBuilder: _buildProductItem,
         itemCount: products.length,
-      );  
+      );
+    } else {
+      productCards = Container();
+    }
+
+    return productCards;
   }
+
+  @override
+    Widget build(BuildContext context) {
+      return _buildProductList();
+    }
 }
