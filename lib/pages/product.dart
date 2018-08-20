@@ -8,16 +8,25 @@ class ProductPage extends StatelessWidget {
           title: Text('Product Detail'),
         ),
         body: Column(
-          children: <Widget>[
-            Text('Details'),
-            RaisedButton(
-              child: Text('Back'),
-              onPressed: () {
-                return Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Image.asset('assets/food.jpg'),
+              Container(
+                padding: EdgeInsets.all(10.0),
+                child: Text('Details'),
+              ),
+              Container(
+                padding: EdgeInsets.all(10.0),
+                child: RaisedButton(
+                  child: Text('Back'),
+                  color: Theme.of(context).accentColor,
+                  onPressed: () {
+                    return Navigator.pop(context);
+                  },
+                )
+              ),
+            ],
+          ),
       );
     }
 }
