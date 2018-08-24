@@ -26,7 +26,7 @@ class ProductPage extends StatelessWidget {
               child: Text('CONTINUE'),
               onPressed: () {
                 Navigator.pop(context);
-                return Navigator.pop(context, true);
+                Navigator.pop(context, true);
               },
             ),
           ],
