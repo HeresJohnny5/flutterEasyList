@@ -56,9 +56,15 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
               }),
               SizedBox(height: 10.0,),
               RaisedButton(
+                padding: EdgeInsets.all(20.0),
                 color: Theme.of(context).accentColor,
                 textColor: Colors.white,
-                child: Text('Save'),
+                child: Text(
+                  'Save',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                  ),
+                ),
                 onPressed: () {
                   final Map<String, dynamic> product = {
                     'title': _titleValue,
