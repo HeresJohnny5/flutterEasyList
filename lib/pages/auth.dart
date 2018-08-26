@@ -19,7 +19,7 @@ class _AuthPageState extends State<AuthPage> {
           title: Text('Login'),
         ),
         body: Container(
-          margin: EdgeInsets.all(10.0),
+          padding: EdgeInsets.all(10.0),
           child: ListView(
             children: <Widget>[
               TextField(
