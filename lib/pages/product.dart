@@ -2,38 +2,40 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 class ProductPage extends StatelessWidget {
-  final String title;
   final String imageUrl;
+  final String title;
+  final double price;
+  final String description;
 
-  ProductPage(this.title, this.imageUrl);
+  ProductPage(this.imageUrl, this.title, this.price, this.description);
 
   // PRIVATE METHODS
-  _showWarningDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Are you sure?'),
-          content: Text('This action cannot be undone!'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('DISCARD'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            FlatButton(
-              child: Text('CONTINUE'),
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context, true);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+  // _showWarningDialog(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text('Are you sure?'),
+  //         content: Text('This action cannot be undone!'),
+  //         actions: <Widget>[
+  //           FlatButton(
+  //             child: Text('DISCARD'),
+  //             onPressed: () {
+  //               Navigator.pop(context);
+  //             },
+  //           ),
+  //           FlatButton(
+  //             child: Text('CONTINUE'),
+  //             onPressed: () {
+  //               Navigator.pop(context);
+  //               Navigator.pop(context, true);
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
     Widget build(BuildContext context) {
@@ -52,21 +54,50 @@ class ProductPage extends StatelessWidget {
               Image.asset(imageUrl),
               Container(
                 padding: EdgeInsets.all(10.0),
-                child: Text(title),
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 26.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Oswald',
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'Bakery Square, Pittsburgh',
+                    style: TextStyle(
+                      fontFamily: 'Oswald',
+                      color: Colors.grey,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 5.0),
+                    child: Text(
+                      '|',
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    '\${price.toString()}',
+                    style: TextStyle(
+                      fontFamily: 'Oswald',
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
               ),
               Container(
                 padding: EdgeInsets.all(10.0),
-                child: RaisedButton(
-                  child: Text(
-                    'DELETE',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                  color: Theme.of(context).accentColor,
-                  onPressed: () => _showWarningDialog(context),
+                child: Text(
+                  description,
+                  textAlign: TextAlign.center,
                 ),
-              ),
+              ),                   
             ],
           ),
         ),
