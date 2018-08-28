@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+// LOCAL IMPORTS
+import '../widgets/ui_elements/title_default.dart';
+
 class ProductPage extends StatelessWidget {
   final String imageUrl;
   final String title;
@@ -54,14 +57,7 @@ class ProductPage extends StatelessWidget {
               Image.asset(imageUrl),
               Container(
                 padding: EdgeInsets.all(10.0),
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 26.0,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Oswald',
-                  ),
-                ),
+                child: TitleDefault(title),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -83,7 +79,7 @@ class ProductPage extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '\${price.toString()}',
+                    '\$${price.toString()}',
                     style: TextStyle(
                       fontFamily: 'Oswald',
                       color: Colors.grey,
