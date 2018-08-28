@@ -61,32 +61,44 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
     Widget build(BuildContext context) {
+      final double deviceWidth = MediaQuery.of(context).size.width;
+
+      print(deviceWidth);
+      final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.95;
+
+      print(targetWidth);
+
       return Scaffold(
         appBar: AppBar(
           title: Text('Login'),
         ),
         body: Container(
           padding: EdgeInsets.all(10.0),
-          child: ListView(
-            children: <Widget>[
-              _buildEmailTextField(),
-              _buildPasswordTextField(),
-              _buildAcceptSwitch(),
-              SizedBox(height: 10.0,),
-              RaisedButton(
-                padding: EdgeInsets.all(20.0),
-                color: Theme.of(context).accentColor,
-                textColor: Colors.white,
-                child: Text(
-                  'Login',
-                  style: TextStyle(
-                    fontSize: 18.0,
+          child: Center(
+            child: Container(
+              width: targetWidth,
+              child: ListView(
+                children: <Widget>[
+                  _buildEmailTextField(),
+                  _buildPasswordTextField(),
+                  _buildAcceptSwitch(),
+                  SizedBox(height: 10.0,),
+                  RaisedButton(
+                    padding: EdgeInsets.all(20.0),
+                    color: Theme.of(context).accentColor,
+                    textColor: Colors.white,
+                    child: Text(
+                      'Login',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                      ),
+                    ),
+                    onPressed: _submitForm,
                   ),
-                ),
-                onPressed: _submitForm,
+                ],
               ),
-            ],
-          ),
+            ),
+          ), 
         ),
       );
     }
