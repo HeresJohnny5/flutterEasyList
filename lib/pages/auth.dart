@@ -62,11 +62,7 @@ class _AuthPageState extends State<AuthPage> {
   @override
     Widget build(BuildContext context) {
       final double deviceWidth = MediaQuery.of(context).size.width;
-
-      print(deviceWidth);
       final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.95;
-
-      print(targetWidth);
 
       return Scaffold(
         appBar: AppBar(
@@ -85,7 +81,6 @@ class _AuthPageState extends State<AuthPage> {
                   SizedBox(height: 10.0,),
                   RaisedButton(
                     padding: EdgeInsets.all(20.0),
-                    color: Theme.of(context).accentColor,
                     textColor: Colors.white,
                     child: Text(
                       'Login',
