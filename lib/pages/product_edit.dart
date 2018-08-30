@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 class ProductEditPage extends StatefulWidget {
   final Function addProduct;
   final Function updateProduct;
+  final int productIndex;
   final Map<String, dynamic> product;
 
-  ProductEditPage({this.addProduct, this.updateProduct, this.product});
+  ProductEditPage({this.addProduct, this.productIndex, this.updateProduct, this.product});
 
   @override
     State<StatefulWidget> createState() {
@@ -83,7 +84,12 @@ class _ProductEditPageState extends State<ProductEditPage> {
 
     _formKey.currentState.save();
 
-    widget.addProduct(_formData);
+    if (widget.product == null) {
+      widget.addProduct(_formData);
+    } else {
+      widget.updateProduct(widget.productIndex, _formData);
+    }
+
 
     Navigator.pushReplacementNamed(context, '/products');
   }
