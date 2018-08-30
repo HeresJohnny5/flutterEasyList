@@ -35,22 +35,20 @@ class ProductCard extends StatelessWidget {
         IconButton(
           color: Theme.of(context).accentColor,
           icon: Icon(Icons.info),
-          onPressed: () {
-            return Navigator.pushNamed<bool>(
+          onPressed: () => 
+            Navigator.pushNamed<bool>(
               context,
               '/product/' + productIndex.toString(),                          
-            );
-          }
+            ) 
         ),
         IconButton(
           color: Colors.red,
           icon: Icon(Icons.favorite_border),
-          onPressed: () {
-            return Navigator.pushNamed<bool>(
+          onPressed: () =>
+            Navigator.pushNamed<bool>(
               context,
               '/product/' + productIndex.toString(),                          
-            );
-          },
+            )
         )
       ],
     );

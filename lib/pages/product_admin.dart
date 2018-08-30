@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
 // LOCAL IMPORTS
-import './product_create.dart';
+import './product_edit.dart';
 import './product_list.dart';
 
 class ProductAdminPage extends StatelessWidget {
   final Function addProduct;
   final Function deleteProduct;
+  final List<Map<String, dynamic>> products;
 
-  ProductAdminPage(this.addProduct, this.deleteProduct);
+  ProductAdminPage(this.addProduct, this.deleteProduct, this.products);
 
   // PRIVATE METHODS
   Widget _buildSideDrawer(BuildContext context) {
@@ -57,8 +58,8 @@ class ProductAdminPage extends StatelessWidget {
           ),
           body: TabBarView(
             children: <Widget>[
-              ProductCreatePage(addProduct, deleteProduct),
-              ProductListPage(),
+              ProductEditPage(addProduct: addProduct),
+              ProductListPage(products),
             ],
           ),
         ),
