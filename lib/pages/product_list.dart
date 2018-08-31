@@ -13,33 +13,45 @@ class ProductListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       itemBuilder: (BuildContext context, int index) {
-        return Column(
-          children: <Widget>[
-            ListTile(
-              leading: CircleAvatar(
-                backgroundImage: AssetImage(products[index]['image']),
+        return Dismissible(
+          key: Key(products[index]['title']),
+          background: Container(
+            color: Colors.red,
+          ),
+          direction: DismissDirection.endToStart,
+          onDismissed: (direction) {
+            Scaffold.of(context)
+              .showSnackBar(SnackBar(content: Text("item dismissed"))
+            );
+          },
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundImage: AssetImage(products[index]['image']),
+                ),
+                title: Text(products[index]['title']),
+                subtitle: Text('\$${products[index]['price'].toString()}'),
+                trailing: IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) {
+                          return ProductEditPage(
+                            product: products[index],
+                            updateProduct: updateProduct,
+                            productIndex: index,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
               ),
-              title: Text(products[index]['title']),
-              subtitle: Text('\$${products[index]['price'].toString()}'),
-              trailing: IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (BuildContext context) {
-                        return ProductEditPage(
-                          product: products[index],
-                          updateProduct: updateProduct,
-                          productIndex: index,
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
-            Divider()
-          ],
+              Divider()
+            ],
+          ),
         );
       },
       itemCount: products.length,
