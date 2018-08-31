@@ -77,6 +77,47 @@ class _ProductEditPageState extends State<ProductEditPage> {
     );
   }
 
+  Widget _buildPageContent() {
+    final double deviceWidth = MediaQuery.of(context).size.width;
+    // print(deviceWidth);
+    final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.95;
+    // print(targetWidth);
+    final double targetPadding = deviceWidth - targetWidth;
+    // print(targetPadding);
+
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: Container(
+        margin: EdgeInsets.all(10.0),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            padding: EdgeInsets.symmetric(horizontal: targetPadding / 2),
+            children: <Widget>[
+              _buildTitleTextField(),
+              _buildDescriptionTextField(),
+              _buildPriceTextField(),
+              SizedBox(height: 10.0,),
+              RaisedButton(
+                padding: EdgeInsets.all(20.0),
+                textColor: Colors.white,
+                child: Text(
+                  'Save',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                  ),
+                ),
+                onPressed: _submitForm,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   void _submitForm() {
     if (!_formKey.currentState.validate()) {
       return;
@@ -96,43 +137,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
 
   @override
     Widget build(BuildContext context) {
-      final double deviceWidth = MediaQuery.of(context).size.width;
-      // print(deviceWidth);
-      final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.95;
-      // print(targetWidth);
-      final double targetPadding = deviceWidth - targetWidth;
-      // print(targetPadding);
-      final Widget pageContent = GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: Container(
-          margin: EdgeInsets.all(10.0),
-          child: Form(
-            key: _formKey,
-            child: ListView(
-              padding: EdgeInsets.symmetric(horizontal: targetPadding / 2),
-              children: <Widget>[
-                _buildTitleTextField(),
-                _buildDescriptionTextField(),
-                _buildPriceTextField(),
-                SizedBox(height: 10.0,),
-                RaisedButton(
-                  padding: EdgeInsets.all(20.0),
-                  textColor: Colors.white,
-                  child: Text(
-                    'Save',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                    ),
-                  ),
-                  onPressed: _submitForm,
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
+      final Widget pageContent = _buildPageContent();
 
       return widget.product == null ? pageContent : Scaffold(
         appBar: AppBar(
