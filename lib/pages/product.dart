@@ -5,12 +5,12 @@ import 'dart:async';
 import '../widgets/ui_elements/title_default.dart';
 
 class ProductPage extends StatelessWidget {
-  final String imageUrl;
   final String title;
-  final double price;
   final String description;
-
-  ProductPage(this.imageUrl, this.title, this.price, this.description);
+  final double price;
+  final String imageUrl;
+  
+  ProductPage(this.title, this.description, this.price, this.imageUrl);
 
   // PRIVATE METHODS
   // _showWarningDialog(BuildContext context) {

@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 // LOCAL IMPORTS
 import './product_edit.dart';
+import '../models/product.dart';
 
 class ProductListPage extends StatelessWidget {
   final Function deleteProduct;
   final Function updateProduct;
-  final List<Map<String, dynamic>> products;
+  final List<Product> products;
 
   ProductListPage(this.deleteProduct, this.updateProduct, this.products);
 
@@ -34,7 +35,7 @@ class ProductListPage extends StatelessWidget {
     return ListView.builder(
       itemBuilder: (BuildContext context, int index) {
         return Dismissible(
-          key: Key(products[index]['title']),
+          key: Key(products[index].title),
           background: Container(
             color: Colors.red,
           ),
@@ -42,7 +43,7 @@ class ProductListPage extends StatelessWidget {
           onDismissed: (DismissDirection direction) {
             if (direction == DismissDirection.endToStart) {
               Scaffold.of(context)
-                .showSnackBar(SnackBar(content: Text('${products[index]["title"]} deleted.')),
+                .showSnackBar(SnackBar(content: Text('${products[index].title} deleted.')),
               );
 
               deleteProduct(index);
@@ -52,10 +53,10 @@ class ProductListPage extends StatelessWidget {
             children: <Widget>[
               ListTile(
                 leading: CircleAvatar(
-                  backgroundImage: AssetImage(products[index]['image']),
+                  backgroundImage: AssetImage(products[index].image),
                 ),
-                title: Text(products[index]['title']),
-                subtitle: Text('\$${products[index]['price'].toString()}'),
+                title: Text(products[index].title),
+                subtitle: Text('\$${products[index].price.toString()}'),
                 trailing: _buildEditButton(context, index),
               ),
               Divider()
