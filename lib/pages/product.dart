@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:scoped_model/scoped_model.dart';
 
 // LOCAL IMPORTS
 import '../widgets/ui_elements/title_default.dart';
+import '../scoped-models/products.dart';
+import '../models/product.dart';
 
 class ProductPage extends StatelessWidget {
-  final String title;
-  final String description;
-  final double price;
-  final String imageUrl;
-  
-  ProductPage(this.title, this.description, this.price, this.imageUrl);
+  final int productIndex;
 
+  ProductPage(this.productIndex);
   // PRIVATE METHODS
   // _showWarningDialog(BuildContext context) {
   //   showDialog(
@@ -41,7 +40,7 @@ class ProductPage extends StatelessWidget {
   // }
 
   // PRIVATE METHODS
-  Widget _buildAddressPriceRow() {
+  Widget _buildAddressPriceRow(double price) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -73,35 +72,38 @@ class ProductPage extends StatelessWidget {
   }
 
   @override
-    Widget build(BuildContext context) {
-      return WillPopScope(
-        onWillPop: () {
-          Navigator.pop(context, false);
-          return Future.value(false);
-        },
-        child: Scaffold(
+  Widget build(BuildContext context) {
+    return WillPopScope(onWillPop: () {
+      Navigator.pop(context, false);
+      return Future.value(false);
+    }, child: ScopedModelDescendant<ProductsModel>(
+      builder: (BuildContext context, Widget child, ProductsModel model) {
+        final Product product = model.products[productIndex];
+
+        return Scaffold(
           appBar: AppBar(
-            title: Text(title),
+            title: Text(product.title),
           ),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Image.asset(imageUrl),
+              Image.asset(product.image),
               Container(
                 padding: EdgeInsets.all(10.0),
-                child: TitleDefault(title),
+                child: TitleDefault(product.title),
               ),
-              _buildAddressPriceRow(),
+              _buildAddressPriceRow(product.price),
               Container(
                 padding: EdgeInsets.all(10.0),
                 child: Text(
-                  description,
+                  product.description,
                   textAlign: TextAlign.center,
                 ),
-              ),                   
+              ),
             ],
           ),
-        ),
-      );
-    }
+        );
+      },
+    ));
+  }
 }
