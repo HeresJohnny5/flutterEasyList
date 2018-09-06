@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 // LOCAL IMPORTS
 import '../widgets/products/products.dart';
+import '../scoped-models/products.dart';
 
 class ProductsPage extends StatelessWidget {
   // PRIVATE METHOD
@@ -29,21 +31,25 @@ class ProductsPage extends StatelessWidget {
   }
 
   @override
-    Widget build(BuildContext context) {
-      return Scaffold(
-        drawer: _buildSideDrawer(context),
-        appBar: AppBar(
-          title: Text('EasyList'),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.favorite),
-              onPressed: () {
-                
-              },
-            ),
-          ],
-        ),
-        body: Products(),
-      );
-    }
+  Widget build(BuildContext context) {
+    return Scaffold(
+      drawer: _buildSideDrawer(context),
+      appBar: AppBar(
+        title: Text('EasyList'),
+        actions: <Widget>[
+          ScopedModelDescendant<ProductsModel>(
+            builder: (BuildContext context, Widget child, ProductsModel model) {
+              return IconButton(
+                icon: Icon(model.displayFavoritesOnly ? Icons.favorite : Icons.favorite_border),
+                onPressed: () {
+                  model.toggleDisplayMode();
+                },
+              );
+            },
+          ),
+        ],
+      ),
+      body: Products(),
+    );
+  }
 }
