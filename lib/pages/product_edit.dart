@@ -3,7 +3,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 // LOCAL IMPORTS
 import '../models/product.dart';
-import '../scoped-models/products.dart';
+import '../scoped-models/main.dart';
 
 class ProductEditPage extends StatefulWidget {
   @override
@@ -79,7 +79,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
 
   Widget _buildSubmitButton() {
     return ScopedModelDescendant(
-      builder: (BuildContext context, Widget child, ProductsModel model) {
+      builder: (BuildContext context, Widget child, MainModel model) {
         return RaisedButton(
           padding: EdgeInsets.all(20.0),
           textColor: Colors.white,
@@ -158,8 +158,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ProductsModel>(
-      builder: (BuildContext context, Widget child, ProductsModel model) {
+    return ScopedModelDescendant<MainModel>(
+      builder: (BuildContext context, Widget child, MainModel model) {
         final Widget pageContent = _buildPageContent(context, model.selectedProduct);
 
         return model.selectedProductIndex == null

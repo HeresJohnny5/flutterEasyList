@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
+
+// LOCAL IMPORTS
+import '../scoped-models/main.dart';
 
 class AuthPage extends StatefulWidget {
   @override
-    State<StatefulWidget> createState() {
-      return _AuthPageState();
-    }
+  State<StatefulWidget> createState() {
+    return _AuthPageState();
+  }
 }
 
 class _AuthPageState extends State<AuthPage> {
@@ -23,12 +27,14 @@ class _AuthPageState extends State<AuthPage> {
       ),
       keyboardType: TextInputType.emailAddress,
       validator: (String value) {
-        if (value.isEmpty || !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?").hasMatch(value)) {
+        if (value.isEmpty ||
+            !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                .hasMatch(value)) {
           return 'Please enter a valid Email.';
         }
       },
       onSaved: (String value) {
-        _formData['email'] = value;                    
+        _formData['email'] = value;
       },
     );
   }
@@ -45,7 +51,7 @@ class _AuthPageState extends State<AuthPage> {
         }
       },
       onSaved: (String value) {
-        _formData['password'] = value;                    
+        _formData['password'] = value;
       },
     );
   }
@@ -62,62 +68,68 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  void _submitForm() {
+  void _submitForm(Function login) {
     if (!_formKey.currentState.validate() || !_formData['acceptTerms']) {
       return;
     }
 
     _formKey.currentState.save();
 
-    print(_formData);
+    login(_formData['email'], _formData['password']);
 
     Navigator.pushReplacementNamed(context, '/products');
   }
 
   @override
-    Widget build(BuildContext context) {
-      final double deviceWidth = MediaQuery.of(context).size.width;
-      final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.95;
+  Widget build(BuildContext context) {
+    final double deviceWidth = MediaQuery.of(context).size.width;
+    final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.95;
 
-      return GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text('Login'),
-          ),
-          body: Container(
-            padding: EdgeInsets.all(10.0),
-            child: Center(
-              child: Container(
-                width: targetWidth,
-                child: Form(
-                  key: _formKey,
-                  child: ListView(
-                    children: <Widget>[
-                      _buildEmailTextField(),
-                      _buildPasswordTextField(),
-                      _buildAcceptSwitch(),
-                      SizedBox(height: 10.0,),
-                      RaisedButton(
-                        padding: EdgeInsets.all(20.0),
-                        textColor: Colors.white,
-                        child: Text(
-                          'Login',
-                          style: TextStyle(
-                            fontSize: 18.0,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Login'),
+        ),
+        body: Container(
+          padding: EdgeInsets.all(10.0),
+          child: Center(
+            child: Container(
+              width: targetWidth,
+              child: Form(
+                key: _formKey,
+                child: ListView(
+                  children: <Widget>[
+                    _buildEmailTextField(),
+                    _buildPasswordTextField(),
+                    _buildAcceptSwitch(),
+                    SizedBox(
+                      height: 10.0,
+                    ),
+                    ScopedModelDescendant<MainModel>(
+                      builder: (BuildContext context, Widget child, MainModel model) {
+                        return RaisedButton(
+                          padding: EdgeInsets.all(20.0),
+                          textColor: Colors.white,
+                          child: Text(
+                            'Login',
+                            style: TextStyle(
+                              fontSize: 18.0,
+                            ),
                           ),
-                        ),
-                        onPressed: _submitForm,
-                      ),
-                    ],
-                  ),
+                          onPressed: () => _submitForm(model.login),
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
-            ), 
+            ),
           ),
         ),
-      ); 
-    }
+      ),
+    );
+  }
 }

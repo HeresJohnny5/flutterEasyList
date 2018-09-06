@@ -3,7 +3,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 // LOCAL IMPORTS
 import '../widgets/products/products.dart';
-import '../scoped-models/products.dart';
+import '../scoped-models/main.dart';
 
 class ProductsPage extends StatelessWidget {
   // PRIVATE METHOD
@@ -37,8 +37,8 @@ class ProductsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('EasyList'),
         actions: <Widget>[
-          ScopedModelDescendant<ProductsModel>(
-            builder: (BuildContext context, Widget child, ProductsModel model) {
+          ScopedModelDescendant<MainModel>(
+            builder: (BuildContext context, Widget child, MainModel model) {
               return IconButton(
                 icon: Icon(model.displayFavoritesOnly ? Icons.favorite : Icons.favorite_border),
                 onPressed: () {
