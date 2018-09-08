@@ -114,15 +114,24 @@ class ProductsModel extends ConnectedProductsModel {
   }
 
   void deleteProduct() {
-    _products.removeAt(selectedProductIndex);  
+    _isLoading = true;
+    final deletedProductId = selectedProduct.id;
+    _products.removeAt(selectedProductIndex); 
+    _selProductIndex = null; 
     notifyListeners();
+
+    http.delete('https://flutter-easy-list.firebaseio.com/products/${deletedProductId}.json')
+      .then((http.Response response) {
+        _isLoading = false;
+        notifyListeners();
+      });
   }
 
-  void fetchProducts() {
+  Future<Null> fetchProducts() {
     _isLoading = true;
     notifyListeners();
 
-    http.get('https://flutter-easy-list.firebaseio.com/products.json')
+    return http.get('https://flutter-easy-list.firebaseio.com/products.json')
       .then((http.Response response) {
         final List<Product> fetechedProductList = [];
         final Map<String, dynamic> productListData = json.decode(response.body);
