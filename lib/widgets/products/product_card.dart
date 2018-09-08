@@ -45,7 +45,7 @@ class ProductCard extends StatelessWidget {
           builder: (BuildContext context, Widget child, MainModel model) {
             return IconButton(
               color: Colors.red,
-              icon: Icon(model.products[productIndex].isFavorite ? Icons.favorite : Icons.favorite_border),
+              icon: Icon(model.allProducts[productIndex].isFavorite ? Icons.favorite : Icons.favorite_border),
               onPressed: () {
                 model.selectProduct(productIndex);
                 model.toggleProductFavoriteStatus();
@@ -67,6 +67,7 @@ class ProductCard extends StatelessWidget {
           AddressTag(
             'Bakery Square, Pittsburgh',
           ),
+          Text(product.userEmail),
           _buildActionButtons(context),
         ],
       ),
