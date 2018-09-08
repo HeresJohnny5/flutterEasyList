@@ -80,18 +80,37 @@ class ProductsModel extends ConnectedProductsModel {
   }
 
   // PRIVATE METHOD
-  void updateProduct(String title, String description, double price, String image) {
-    final Product updatedProduct = Product(
-      title: title, 
-      description: description, 
-      price: price, 
-      image: image, 
-      userEmail: selectedProduct.userEmail, 
-      userId: selectedProduct.userId,
-    );
+  Future<Null> updateProduct(String title, String description, double price, String image) {
+    _isLoading = true;
+    notifyListeners();
 
-    _products[selectedProductIndex] = updatedProduct;
-    notifyListeners();    
+    final Map<String, dynamic> updateData = {
+      'title': title,
+      'description': description,
+      'price': price,
+      'image': 'https://images.unsplash.com/photo-1506354666786-959d6d497f1a?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=86c8c1fd5e9e5b384696472a095c42ac&auto=format&fit=crop&w=1350&q=80',
+      'userEmail': selectedProduct.userEmail, 
+      'userId': selectedProduct.userId,
+    };
+
+    return http.put('https://flutter-easy-list.firebaseio.com/products/${selectedProduct.id}.json', body: json.encode(updateData))
+      .then((http.Response response) {
+
+        _isLoading = false;
+
+        final Product updatedProduct = Product(
+          id: selectedProduct.id,
+          title: title, 
+          description: description, 
+          price: price, 
+          image: image, 
+          userEmail: selectedProduct.userEmail, 
+          userId: selectedProduct.userId,
+        );
+
+        _products[selectedProductIndex] = updatedProduct;
+        notifyListeners(); 
+      });  
   }
 
   void deleteProduct() {
