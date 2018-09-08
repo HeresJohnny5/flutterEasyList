@@ -18,6 +18,8 @@ class ConnectedProductsModel extends Model {
       'description': description,
       'image': 'https://images.unsplash.com/photo-1506354666786-959d6d497f1a?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=86c8c1fd5e9e5b384696472a095c42ac&auto=format&fit=crop&w=1350&q=80',
       'price': price,
+      'userEmail': _authenticatedUser.email,
+      'userId': _authenticatedUser.id,
     };
 
     http.post('https://flutter-easy-list.firebaseio.com/products.json', body: json.encode(productData))
@@ -97,7 +99,26 @@ class ProductsModel extends ConnectedProductsModel {
   void fetchProducts() {
     http.get('https://flutter-easy-list.firebaseio.com/products.json')
       .then((http.Response response) {
-        print(json.decode(response.body));
+        final List<Product> fetechedProductList = [];
+        final Map<String, dynamic> productListData = json.decode(response.body);
+
+        productListData
+          .forEach((String productId, dynamic productData) {
+            final Product product = Product(
+              id: productId,
+              title: productData['title'],
+              description: productData['description'],
+              price: productData['price'],
+              image: productData['image'],
+              userEmail: productData['userEmail'],
+              userId: productData['userId'],
+            );
+
+            fetechedProductList.add(product);
+          });
+
+        _products = fetechedProductList;
+        notifyListeners();
     });
   }
 
