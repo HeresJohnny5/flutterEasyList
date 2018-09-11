@@ -58,51 +58,52 @@ class ProductsModel extends ConnectedProductsModel {
     _isLoading = true;
     notifyListeners();
 
-    return http.get('https://flutter-easy-list.firebaseio.com/products.json')
-      .then<Null>((http.Response response) {
-        final List<Product> fetechedProductList = [];
-        final Map<String, dynamic> productListData = json.decode(response.body);
+    return http
+        .get('https://flutter-easy-list.firebaseio.com/products.json')
+        .then<Null>((http.Response response) {
+      final List<Product> fetechedProductList = [];
+      final Map<String, dynamic> productListData = json.decode(response.body);
 
-        if (productListData == null) {
-          _isLoading = false;
-          notifyListeners();
-          return;
-        }
-
-        productListData
-          .forEach((String productId, dynamic productData) {
-            final Product product = Product(
-              id: productId,
-              title: productData['title'],
-              description: productData['description'],
-              price: productData['price'],
-              image: productData['image'],
-              userEmail: productData['userEmail'],
-              userId: productData['userId'],
-            );
-
-            fetechedProductList.add(product);
-          });
-
-        _products = fetechedProductList;
+      if (productListData == null) {
         _isLoading = false;
         notifyListeners();
-    })
-    .catchError((error) {
+        return;
+      }
+
+      productListData.forEach((String productId, dynamic productData) {
+        final Product product = Product(
+          id: productId,
+          title: productData['title'],
+          description: productData['description'],
+          price: productData['price'],
+          image: productData['image'],
+          userEmail: productData['userEmail'],
+          userId: productData['userId'],
+        );
+
+        fetechedProductList.add(product);
+      });
+
+      _products = fetechedProductList;
+      _isLoading = false;
+      notifyListeners();
+    }).catchError((error) {
       _isLoading = false;
       notifyListeners();
       return false;
     });
   }
 
-  Future<bool> addProduct(String title, String description, double price, String image) async {
+  Future<bool> addProduct(
+      String title, String description, double price, String image) async {
     _isLoading = true;
     notifyListeners();
 
     final Map<String, dynamic> productData = {
       'title': title,
       'description': description,
-      'image': 'https://images.unsplash.com/photo-1506354666786-959d6d497f1a?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=86c8c1fd5e9e5b384696472a095c42ac&auto=format&fit=crop&w=1350&q=80',
+      'image':
+          'https://images.unsplash.com/photo-1506354666786-959d6d497f1a?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=86c8c1fd5e9e5b384696472a095c42ac&auto=format&fit=crop&w=1350&q=80',
       'price': price,
       'userEmail': _authenticatedUser.email,
       'userId': _authenticatedUser.id,
@@ -110,10 +111,9 @@ class ProductsModel extends ConnectedProductsModel {
 
     try {
       final http.Response response = await http.post(
-        'https://flutter-easy-list.firebaseio.com/products.json',
-        body: json.encode(productData)
-      );
-          
+          'https://flutter-easy-list.firebaseio.com/products.json',
+          body: json.encode(productData));
+
       if (response.statusCode != 200 && response.statusCode != 201) {
         _isLoading = false;
         notifyListeners();
@@ -123,27 +123,27 @@ class ProductsModel extends ConnectedProductsModel {
       final Map<String, dynamic> responseData = json.decode(response.body);
 
       final Product newProduct = Product(
-        id: responseData['name'],
-        title: title, 
-        description: description, 
-        price: price, 
-        image: image, 
-        userEmail: _authenticatedUser.email, 
-        userId: _authenticatedUser.id
-      );
+          id: responseData['name'],
+          title: title,
+          description: description,
+          price: price,
+          image: image,
+          userEmail: _authenticatedUser.email,
+          userId: _authenticatedUser.id);
 
       _products.add(newProduct);
       _isLoading = false;
       notifyListeners();
       return true;
-    } catch(error) {
+    } catch (error) {
       _isLoading = false;
       notifyListeners();
       return false;
     }
   }
 
-  Future<bool> updateProduct(String title, String description, double price, String image) async {
+  Future<bool> updateProduct(
+      String title, String description, double price, String image) async {
     _isLoading = true;
     notifyListeners();
 
@@ -151,51 +151,50 @@ class ProductsModel extends ConnectedProductsModel {
       'title': title,
       'description': description,
       'price': price,
-      'image': 'https://images.unsplash.com/photo-1506354666786-959d6d497f1a?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=86c8c1fd5e9e5b384696472a095c42ac&auto=format&fit=crop&w=1350&q=80',
-      'userEmail': selectedProduct.userEmail, 
+      'image':
+          'https://images.unsplash.com/photo-1506354666786-959d6d497f1a?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=86c8c1fd5e9e5b384696472a095c42ac&auto=format&fit=crop&w=1350&q=80',
+      'userEmail': selectedProduct.userEmail,
       'userId': selectedProduct.userId,
     };
 
     try {
       final http.Response response = await http.put(
-        'https://flutter-easy-list.firebaseio.com/products/${selectedProduct.id}.json', 
-        body: json.encode(updateData)
-      );
+          'https://flutter-easy-list.firebaseio.com/products/${selectedProduct.id}.json',
+          body: json.encode(updateData));
 
       _isLoading = false;
 
       final Product updatedProduct = Product(
         id: selectedProduct.id,
-        title: title, 
-        description: description, 
-        price: price, 
-        image: image, 
-        userEmail: selectedProduct.userEmail, 
+        title: title,
+        description: description,
+        price: price,
+        image: image,
+        userEmail: selectedProduct.userEmail,
         userId: selectedProduct.userId,
       );
 
       _products[selectedProductIndex] = updatedProduct;
-      notifyListeners(); 
+      notifyListeners();
       return true;
     } catch (error) {
       _isLoading = false;
       notifyListeners();
       return false;
-    }  
+    }
   }
 
   Future<bool> deleteProduct() async {
     _isLoading = true;
     final deletedProductId = selectedProduct.id;
 
-    _products.removeAt(selectedProductIndex); 
-    _selProductId = null; 
+    _products.removeAt(selectedProductIndex);
+    _selProductId = null;
     notifyListeners();
 
     try {
       final http.Response response = await http.delete(
-        'https://flutter-easy-list.firebaseio.com/products/${deletedProductId}.json'
-      );
+          'https://flutter-easy-list.firebaseio.com/products/${deletedProductId}.json');
 
       _isLoading = false;
       notifyListeners();
@@ -240,7 +239,40 @@ class ProductsModel extends ConnectedProductsModel {
 
 class UserModel extends ConnectedProductsModel {
   void login(String email, String password) {
-    _authenticatedUser = User(id: 'hardcode1', email: email, password: password);
+    _authenticatedUser =
+        User(id: 'hardcode1', email: email, password: password);
+  }
+
+  Future<Map<String, dynamic>> signup(String email, String password) async {
+    _isLoading = true;
+    notifyListeners();
+
+    final Map<String, dynamic> authData = {
+      'email': email,
+      'password': password,
+      'returnSecureToken': true,
+    };
+
+    final http.Response response = await http.post(
+      'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyCPE5DlCnbHl6o4UaYTcXq0zJKlSS2sxHA',
+      body: json.encode(authData),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    final Map<String, dynamic> responseData = json.decode(response.body);
+    bool hasError = true;
+    String message = 'Something went wrong.';
+
+    if (responseData.containsKey('idToken')) {
+      hasError = false;
+      message = 'Authentication succeeded!';
+    } else if (responseData['error']['message'] == 'EMAIL_EXISTS') {
+      message = 'This email already exists.';
+    }
+
+    _isLoading = false;
+    notifyListeners();
+    return {'success': !hasError, 'message': message};
   }
 }
 
