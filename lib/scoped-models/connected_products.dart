@@ -1,5 +1,6 @@
 import 'package:scoped_model/scoped_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:convert';
 import 'dart:async';
@@ -7,6 +8,7 @@ import 'dart:async';
 // LOCAL IMPORTS
 import '../models/product.dart';
 import '../models/user.dart';
+import '../models/auth.dart';
 
 class ConnectedProductsModel extends Model {
   List<Product> _products = [];
@@ -59,7 +61,8 @@ class ProductsModel extends ConnectedProductsModel {
     notifyListeners();
 
     return http
-        .get('https://flutter-easy-list.firebaseio.com/products.json')
+        .get(
+            'https://flutter-easy-list.firebaseio.com/products.json?auth=${_authenticatedUser.token}')
         .then<Null>((http.Response response) {
       final List<Product> fetechedProductList = [];
       final Map<String, dynamic> productListData = json.decode(response.body);
@@ -111,7 +114,7 @@ class ProductsModel extends ConnectedProductsModel {
 
     try {
       final http.Response response = await http.post(
-          'https://flutter-easy-list.firebaseio.com/products.json',
+          'https://flutter-easy-list.firebaseio.com/products.json?auth=${_authenticatedUser.token}',
           body: json.encode(productData));
 
       if (response.statusCode != 200 && response.statusCode != 201) {
@@ -159,7 +162,7 @@ class ProductsModel extends ConnectedProductsModel {
 
     try {
       final http.Response response = await http.put(
-          'https://flutter-easy-list.firebaseio.com/products/${selectedProduct.id}.json',
+          'https://flutter-easy-list.firebaseio.com/products/${selectedProduct.id}.json?auth=${_authenticatedUser.token}',
           body: json.encode(updateData));
 
       _isLoading = false;
@@ -194,7 +197,7 @@ class ProductsModel extends ConnectedProductsModel {
 
     try {
       final http.Response response = await http.delete(
-          'https://flutter-easy-list.firebaseio.com/products/${deletedProductId}.json');
+          'https://flutter-easy-list.firebaseio.com/products/${deletedProductId}.json?auth=${_authenticatedUser.token}');
 
       _isLoading = false;
       notifyListeners();
@@ -238,7 +241,12 @@ class ProductsModel extends ConnectedProductsModel {
 }
 
 class UserModel extends ConnectedProductsModel {
-  Future<Map<String, dynamic>> login(String email, String password) async {
+  User get user {
+    return _authenticatedUser;
+  }
+
+  Future<Map<String, dynamic>> authenticate(String email, String password,
+      [AuthMode mode = AuthMode.Login]) async {
     _isLoading = true;
     notifyListeners();
 
@@ -248,11 +256,21 @@ class UserModel extends ConnectedProductsModel {
       'returnSecureToken': true,
     };
 
-    final http.Response response = await http.post(
-      'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCPE5DlCnbHl6o4UaYTcXq0zJKlSS2sxHA',
-      body: json.encode(authData),
-      headers: {'Content-Type': 'application/json'},
-    );
+    http.Response response;
+
+    if (mode == AuthMode.Login) {
+      response = await http.post(
+        'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCPE5DlCnbHl6o4UaYTcXq0zJKlSS2sxHA',
+        body: json.encode(authData),
+        headers: {'Content-Type': 'application/json'},
+      );
+    } else {
+      response = await http.post(
+        'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyCPE5DlCnbHl6o4UaYTcXq0zJKlSS2sxHA',
+        body: json.encode(authData),
+        headers: {'Content-Type': 'application/json'},
+      );
+    }
 
     final Map<String, dynamic> responseData = json.decode(response.body);
     bool hasError = true;
@@ -261,8 +279,19 @@ class UserModel extends ConnectedProductsModel {
     if (responseData.containsKey('idToken')) {
       hasError = false;
       message = 'Authentication succeeded!';
+      _authenticatedUser = User(
+          id: responseData['localId'],
+          email: email,
+          token: responseData['idToken']);
+
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('token', responseData['idToken']);
+      prefs.setString('userEmail', email);
+      prefs.setString('userId', responseData['localId']);
     } else if (responseData['error']['message'] == 'EMAIL_NOT_FOUND') {
       message = 'This email was not found.';
+    } else if (responseData['error']['message'] == 'EMAIL_EXISTS') {
+      message = 'This email already exists.';
     } else if (responseData['error']['message'] == 'INVALID_PASSWORD') {
       message = 'This password is invalid';
     }
@@ -272,36 +301,16 @@ class UserModel extends ConnectedProductsModel {
     return {'success': !hasError, 'message': message};
   }
 
-  Future<Map<String, dynamic>> signup(String email, String password) async {
-    _isLoading = true;
-    notifyListeners();
+  void autoAuthenticate() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String token = prefs.getString('token');
 
-    final Map<String, dynamic> authData = {
-      'email': email,
-      'password': password,
-      'returnSecureToken': true,
-    };
-
-    final http.Response response = await http.post(
-      'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyCPE5DlCnbHl6o4UaYTcXq0zJKlSS2sxHA',
-      body: json.encode(authData),
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    final Map<String, dynamic> responseData = json.decode(response.body);
-    bool hasError = true;
-    String message = 'Something went wrong.';
-
-    if (responseData.containsKey('idToken')) {
-      hasError = false;
-      message = 'Authentication succeeded!';
-    } else if (responseData['error']['message'] == 'EMAIL_EXISTS') {
-      message = 'This email already exists.';
+    if (token != null) {
+      final String userEmail = prefs.getString('userEmail');
+      final String userId = prefs.getString('userId');
+      _authenticatedUser = User(id: userId, email: userEmail, token: token);
+      notifyListeners();
     }
-
-    _isLoading = false;
-    notifyListeners();
-    return {'success': !hasError, 'message': message};
   }
 }
 

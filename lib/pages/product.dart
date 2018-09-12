@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:scoped_model/scoped_model.dart';
 
 // LOCAL IMPORTS
 import '../widgets/ui_elements/title_default.dart';
-import '../scoped-models/main.dart';
 import '../models/product.dart';
 
 class ProductPage extends StatelessWidget {
@@ -74,37 +72,39 @@ class ProductPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(onWillPop: () {
-      Navigator.pop(context, false);
-      return Future.value(false);
-    }, child: Scaffold(
-          appBar: AppBar(
-            title: Text(product.title),
-          ),
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              FadeInImage(
-                image: NetworkImage(product.image),
-                height: 300.0,
-                fit: BoxFit.cover,
-                placeholder: AssetImage('assets/food.jpg'),
-              ),
-              Container(
-                padding: EdgeInsets.all(10.0),
-                child: TitleDefault(product.title),
-              ),
-              _buildAddressPriceRow(product.price),
-              Container(
-                padding: EdgeInsets.all(10.0),
-                child: Text(
-                  product.description,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ),
+    return WillPopScope(
+      onWillPop: () {
+        Navigator.pop(context, false);
+        return Future.value(false);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(product.title),
         ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            FadeInImage(
+              image: NetworkImage(product.image),
+              height: 300.0,
+              fit: BoxFit.cover,
+              placeholder: AssetImage('assets/food.jpg'),
+            ),
+            Container(
+              padding: EdgeInsets.all(10.0),
+              child: TitleDefault(product.title),
+            ),
+            _buildAddressPriceRow(product.price),
+            Container(
+              padding: EdgeInsets.all(10.0),
+              child: Text(
+                product.description,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
