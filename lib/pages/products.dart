@@ -4,6 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 // LOCAL IMPORTS
 import '../widgets/products/products.dart';
 import '../scoped-models/main.dart';
+import '../widgets/ui_elements/logout_list_tile.dart';
 
 class ProductsPage extends StatefulWidget {
   final MainModel model;
@@ -11,9 +12,9 @@ class ProductsPage extends StatefulWidget {
   ProductsPage(this.model);
 
   @override
-    State<StatefulWidget> createState() {
-      return _ProductsPageState();
-    }
+  State<StatefulWidget> createState() {
+    return _ProductsPageState();
+  }
 }
 
 class _ProductsPageState extends State<ProductsPage> {
@@ -42,6 +43,8 @@ class _ProductsPageState extends State<ProductsPage> {
               );
             },
           ),
+          Divider(),
+          LogoutListTile(),
         ],
       ),
     );
@@ -73,7 +76,9 @@ class _ProductsPageState extends State<ProductsPage> {
           ScopedModelDescendant<MainModel>(
             builder: (BuildContext context, Widget child, MainModel model) {
               return IconButton(
-                icon: Icon(model.displayFavoritesOnly ? Icons.favorite : Icons.favorite_border),
+                icon: Icon(model.displayFavoritesOnly
+                    ? Icons.favorite
+                    : Icons.favorite_border),
                 onPressed: () {
                   model.toggleDisplayMode();
                 },
